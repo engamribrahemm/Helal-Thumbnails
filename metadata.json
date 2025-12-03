@@ -1,0 +1,5 @@
+{
+  "name": "Helal Thumbnails",
+  "description": "High-quality thumbnail generator ensuring facial identity consistency using Gemini Pro Image models.",
+  "requestFramePermissions": []
+}
