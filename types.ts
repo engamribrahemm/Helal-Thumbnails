@@ -3,6 +3,11 @@ export enum ImageSize {
   REELS = '1080x1920',
 }
 
+export enum GenerationTab {
+  YOUTUBE = 'YOUTUBE',
+  REELS_PRO = 'REELS_PRO',
+}
+
 export interface ThumbnailConfig {
   pose: string;
   style: string;
@@ -11,6 +16,7 @@ export interface ThumbnailConfig {
   lighting: string;
   background: string;
   selectedSize: ImageSize;
+  icons?: string; // New field for the Reel Pro tab
 }
 
 export interface GeneratedImage {

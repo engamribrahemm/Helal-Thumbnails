@@ -1,9 +1,10 @@
 import React from 'react';
-import { ThumbnailConfig, ImageSize } from '../types';
+import { ThumbnailConfig, ImageSize, GenerationTab } from '../types';
 
 interface Props {
   config: ThumbnailConfig;
   setConfig: React.Dispatch<React.SetStateAction<ThumbnailConfig>>;
+  activeTab: GenerationTab;
 }
 
 interface InputWithSuggestionsProps {
@@ -28,7 +29,7 @@ const InputWithSuggestions: React.FC<InputWithSuggestionsProps> = ({ label, valu
         rows={3}
       />
       <div className="flex flex-wrap gap-1.5">
-        {suggestions.slice(0, 4).map((suggestion) => (
+        {suggestions.slice(0, 6).map((suggestion) => (
           <button 
             key={suggestion} 
             onClick={() => onChange(suggestion)}
@@ -46,7 +47,7 @@ const InputWithSuggestions: React.FC<InputWithSuggestionsProps> = ({ label, valu
   );
 };
 
-const SettingsForm: React.FC<Props> = ({ config, setConfig }) => {
+const SettingsForm: React.FC<Props> = ({ config, setConfig, activeTab }) => {
   
   const handleChange = (key: keyof ThumbnailConfig, value: any) => {
     setConfig(prev => ({ ...prev, [key]: value }));
@@ -54,13 +55,14 @@ const SettingsForm: React.FC<Props> = ({ config, setConfig }) => {
 
   const cardClass = "bg-[#1A1A1A] border-l-4 border-[#F2C100] rounded-r-xl p-5 shadow-lg";
 
-  // Configuration Data
-  const poses = ["Pointing at camera", "Crossed arms", "Hands on face", "Thinking", "Thumbs up", "Open arms"];
-  const styles = ["Cinematic", "MrBeast Style", "Ali Abdaal", "Neon Cyberpunk", "Dramatic", "Hyper-Realistic"];
+  // Refined Configuration Data based on reference images
+  const poses = ["Pointing at camera", "Crossed arms", "Hands on face", "Thinking", "Thumbs up", "Holding iPhone", "Hands open wide"];
+  const styles = ["Helal Pro Signature", "Holographic Tech", "MrBeast Style", "Ali Abdaal", "Hyper-Realistic"];
   const cameraAngles = ["Eye-level", "Low Angle", "Wide Shot", "Close-up", "Selfie Style"];
-  const emotions = ["Shocked", "Excited", "Happy", "Serious", "Angry", "Laughing"];
-  const backgrounds = ["Blurred Studio", "Neon Tech Grid", "Explosion", "Gradient", "City Street", "Money Rain"];
-  const lightings = ["Softbox Studio", "Neon Rim Lights", "Dramatic", "Natural Sunlight", "Golden Hour"];
+  const emotions = ["Shocked", "Excited", "Happy", "Serious", "Intense Focused", "Laughing"];
+  const backgrounds = ["Deep Blue Tech Grid", "Dark Circuitry Glow", "Floating Code Particles", "Abstract Neon Gradient", "Holographic Studio"];
+  const lightings = ["Cyan Rim Light", "Blue Edge Glow", "Softbox Studio", "Dramatic Side Light", "Neon Rim Lights"];
+  const iconSuggestions = ["Floating iPhone 15 Pro", "3D Wikipedia Logo", "Floating Wireless Mics", "Search Bar Hologram", "Instagram & WhatsApp Icons", "Elon Musk 3D Figure"];
 
   return (
     <div className="flex flex-col gap-6">
@@ -68,7 +70,7 @@ const SettingsForm: React.FC<Props> = ({ config, setConfig }) => {
       {/* Visual & Scene Settings */}
       <section>
         <h2 className="text-[#F2C100] font-bold text-lg uppercase tracking-wider mb-4">
-            <i className="fa-solid fa-sliders mr-2"></i> Visual Settings
+            <i className="fa-solid fa-sliders mr-2"></i> {activeTab === GenerationTab.REELS_PRO ? 'Reel Pro Settings' : 'Visual Settings'}
         </h2>
         
         <div className={cardClass}>
@@ -110,6 +112,17 @@ const SettingsForm: React.FC<Props> = ({ config, setConfig }) => {
                   onChange={(val) => handleChange('lighting', val)} 
                   suggestions={lightings}
               />
+              {activeTab === GenerationTab.REELS_PRO && (
+                <div className="md:col-span-2">
+                  <InputWithSuggestions 
+                      label="3D Icons & Floating Gadgets" 
+                      value={config.icons || ''} 
+                      onChange={(val) => handleChange('icons', val)} 
+                      suggestions={iconSuggestions}
+                      placeholder="e.g. Floating iPhone, 3D Wikipedia logo, search bar, wireless microphones..."
+                  />
+                </div>
+              )}
            </div>
         </div>
       </section>

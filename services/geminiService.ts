@@ -27,35 +27,56 @@ export const generateThumbnails = async (
 
   const results: { size: ImageSize; base64: string }[] = [];
 
+  // Determine if we are in "Helal Reel" mode based on aspect ratio/config presence
+  const isReelPro = config.selectedSize === ImageSize.REELS;
+
+  // Icons section for the prompt - strictly 2 icons, one left, one right
+  const iconsPrompt = config.icons ? `
+    ICON CONFIGURATION (STANDARD):
+    - Include exactly 2 high-detailed 3D icons: ${config.icons}.
+    - PLACEMENT: Place one icon floating just above the left shoulder and the other floating just above the right shoulder.
+    - VISUAL EFFECT: Apply a smooth, elegant radial blur (motion blur) to both icons to create a sense of depth and focus on the subject.
+    - QUALITY: Hyper-realistic textures (glass, metal, high-end 3D render).
+    - NO GLOW: NO artificial glowing outlines or halos around the icons.
+  ` : '';
+
+  const styleSpecifics = isReelPro ? `
+    HELAL REEL SIGNATURE STYLE:
+    - BACKGROUND: Deep midnight blue, dark carbon, or sleek tech-gray. Subtle technical patterns or clean bokeh.
+    - LIGHTING: High-quality natural studio lighting. NO cyan/blue rim lights and NO artificial edge glows.
+    - COMPOSITION: Subject is sharp and clear. NO outer glow, NO halos, NO white/blue aura.
+    - ABSOLUTELY NO TEXT: CRITICAL RULE - Do not render any text, letters, numbers, watermarks, or typography anywhere in the image.
+  ` : `
+    GENERAL STYLE:
+    - Style: ${config.style}.
+    - Background: ${config.background}.
+    - Lighting: ${config.lighting}.
+  `;
+
   // Construct the prompt
   const basePrompt = `
-    ROLE: Expert YouTube Thumbnail Designer.
+    ROLE: Elite Visual Designer for Social Media.
     
     PRIMARY OBJECTIVE:
-    Generate a photorealistic image of the **SPECIFIC PERSON** shown in the attached reference images. 
+    Create a hyper-realistic image of the **SPECIFIC PERSON** from the reference images. 
     
-    CRITICAL IDENTITY LOCK (DO NOT IGNORE):
-    1. **FACE ID**: The generated face MUST BE AN EXACT MATCH to the reference images. Use the same eye shape, nose structure, jawline, and skin tone.
-    2. **NO GENERIC FACES**: Do not replace the person with a generic model. It must be recognizable as the person in the reference.
-    3. **DETAILS**: Preserve moles, scars, facial hair patterns, and unique features from the reference.
-    
-    EXPRESSION & ACTION (MORPHING):
-    1. **Target Emotion**: ${config.emotion}.
-       - Apply this emotion to the reference face *without* changing the person's identity. 
-       - If the emotion requires an open mouth (e.g., Shocked, Excited), ensure **REALISTIC TEETH** and natural mouth interior are visible.
-    2. **Target Pose**: ${config.pose}.
+    CRITICAL IDENTITY & EXPRESSION LOCK:
+    1. **EXACT FACE MATCH**: Replicate the exact facial structure, eyes, nose, jawline, and skin texture of the person in the references.
+    2. **EXACT EXPRESSION MATCH**: Mirror the facial expression from the reference images with 100% fidelity. Use the exact same micro-expressions (smile, shock, etc.) as the reference.
+    3. **NO GENERIC FACES**: Do not substitute with a stock model face.
     
     SCENE SPECIFICATIONS:
-    - **Composition**: Subject is CENTERED in the frame. Upper body / Portrait shot.
-    - **Style**: ${config.style}.
-    - **Background**: ${config.background}.
-    - **Lighting**: ${config.lighting}.
+    - **Composition**: Subject is centered, upper body / portrait shot.
     - **Camera Angle**: ${config.cameraAngle}.
+    - **Pose**: ${config.pose}.
+    ${styleSpecifics}
+    ${iconsPrompt}
 
     QUALITY STANDARDS:
-    - 8k UHD, Hyper-realistic, High Texture.
-    - **NO PLASTIC SKIN**: Keep natural skin pores and texture.
-    - **Sharp Focus**: Eyes must be perfectly sharp and detailed.
+    - 8k UHD, Ultra-photorealistic, high-end cinematic render.
+    - STRICTLY NO TEXT, NO LETTERS, NO NUMBERS.
+    - NO GLOW OUTLINES, NO HALOS, NO ARTIFICIAL RIM LIGHTING.
+    - Perfect rendering of hands and eyes.
   `;
 
   // Number of variations to generate
